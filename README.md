@@ -41,7 +41,7 @@ To execute `MyShell` from any location, add its directory to your `PATH` environ
 To compile `MyShell` with its various source files, use the following `gcc` command:
 
   ```
-gcc -o my_shell program.c mycp.c mymv.c mypwd.c myecho.c myhelp.c mycd.c envir.c external.c mytype.c -lreadline -lhistory
+gcc -o my_shell program.c mycp.c mymv.c mypwd.c myecho.c myhelp.c mycd.c envir.c external.c mytype.c piping.c myfree.c myuptime.c redirection.c -lreadline -lhistory 
 ```
 ## Examples 
 
