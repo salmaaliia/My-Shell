@@ -92,5 +92,5 @@ envir PATH
 ### pipe and redirection 
 ```
 ls | grep p > output.txt
-
+```
 
