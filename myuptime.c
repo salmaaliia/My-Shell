@@ -39,7 +39,10 @@ void printUptime() {
 	int days = uptime / 86400;
     	int hours = (uptime - (days * 86400)) / 3600;
     	int minutes = (uptime - (days * 86400) - (hours * 3600)) / 60;
-    
+
+        int idays = idleTime / 86400;
+        int ihours = (idleTime - (idays * 86400)) / 3600;
+        int iminutes = (idleTime - (idays * 86400) - (ihours * 3600)) / 60;	
 
 	fd = open("/proc/loadavg", O_RDONLY);
     
@@ -63,6 +66,8 @@ void printUptime() {
     	sscanf(loadfile, "%lf %lf %lf", &load1, &load5, &load15);
       
 	printf("%s up %d:%02d, 1 user, load average: %.2f, %.2f, %.2f\n", mytime, hours, minutes, load1, load5, load15);
+       	printf("Idle %d:%02d\n", ihours, iminutes);
+
 }
 
 

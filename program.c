@@ -17,68 +17,13 @@
 #include "myfree.h"
 #include "myuptime.h"
 #include "redirection.h"
-
+#include "terminate.h"
 #define MAXARG 150
-char *inputFile = NULL;
-char *outputFile = NULL;
-char *errorFile = NULL;
 
-void  terminateCommand(int sz, char **parsedCmd, char **parsedPipe, int pipeFlag)
-{
-        if(strcmp(parsedCmd[0], "mycp") == 0)
-        {
-                runMycp(sz, parsedCmd);
-        }
-        else if(strcmp(parsedCmd[0], "mymv") == 0)
-        {
-                runMymv(sz, parsedCmd);
-        }
-        else if(strcmp(parsedCmd[0], "mypwd") == 0)
-        {
-                runMypwd();
-        }
-        else if(strcmp(parsedCmd[0], "myecho") == 0)
-        {
-                runMyecho(sz, parsedCmd);
-        }
-        else if(strcmp(parsedCmd[0], "myexit") == 0)
-        {
-                exit(0);
-        }
-        else if(strcmp(parsedCmd[0], "myhelp") == 0)
-        {
-                runMyhelp(sz, parsedCmd);
-        }
-        else if(strcmp(parsedCmd[0], "mycd") == 0)
-        {
-                runMycd(sz, parsedCmd);
-        }
-        else if(strcmp(parsedCmd[0], "envir") == 0)
-        {
-                runMyenvir(sz, parsedCmd);
-        }
-        else if(strcmp(parsedCmd[0], "mytype") == 0)
-        {
-                runMytype(parsedCmd);
-        }
-        else if(strcmp(parsedCmd[0], "myfree") == 0)
-        {
-                printMemoryInfo();
-        }
-        else if(strcmp(parsedCmd[0], "myuptime") == 0)
-        {
-                printUptime();
-        }
-	else {
-		if(pipeFlag == 2)
-		{
-		       	executePiped(parsedCmd, parsedPipe);
-		}
-		else if(pipeFlag == 0){
-		      	runExternal(parsedCmd);
-		}
-        }
-}
+
+char cmd[1024], *parsedCmd[MAXARG], *parsedPipe[MAXARG], cmd2[1024], cmd3[1024];
+int processFlag = 0, redirectionFlag = 0, argcnt;
+
 void currentDir()
 {
 	char*  user;
@@ -137,35 +82,62 @@ int  parseCommand(char *cmd, char ** parsed)
 	return i;
 }
 
-int redirectionCmd(char *cmd)
+int redirectionCmd(char *cmd, char *cmd2, streamFiles *mystream)
 {
 	int i = 0, red = 0;
-	char *token;
-//	*append = 0;
+	char *token, mycmd[1024] = "", *str;
+	int append = 0;
 	while((token = strsep(&cmd, " ")) != NULL)
 	{
-		if (strcmp(token, "<") == 0
-			|| strcmp(token, ">") == 0
-			||strcmp(token, ">>") == 0
-			||strcmp(token, "2>") == 0)
+		if(strcmp(token, "<") == 0)
 		{
+			str = strsep(&cmd, " ");
+			if (str != NULL) {
+				strcpy(mystream->inputFile, str);
+			}
 			red = 1;
+		}	
+		else if(strcmp(token, ">") == 0)
+                {      
+		       	str = strsep(&cmd, " ");
+                        if (str != NULL) {
+				strcpy(mystream->outputFile, str);
+			}
+                        red = 1;
+                } 
+                else if(strcmp(token, ">>") == 0)
+                {
+			str = strsep(&cmd, " ");
+                        if (str != NULL) {
+		       		strcpy(mystream->outputFile, str);
+			}
+			append = 1;
+                        red = 1;
+                }
+                else if(strcmp(token, "2>") == 0)
+                {
+			str = strsep(&cmd, " ");
+        		if (str != NULL) {
+				strcpy(mystream->errorFile, str);
+			}
+			red = 1;
+                }
+		else if(*token != '\0')
+		{ 
+			strcat(mycmd, token);
+			strcat(mycmd, " ");
 		}
 	}
+	strcpy(cmd2, mycmd);
 
-	return red;
+	return red + append;
 
 }
 int processCommand(char *cmd, char ** parsed, char **parsedPipe, int* argcnt)
 {
-	char* cmdPiped[2], cmd2[MAXARG], cmd3[MAXARG];
+	char* cmdPiped[2], cmd2[1024], cmd3[1024];
 	int piped = 0, redirection = 0;
-	strcpy(cmd2, cmd);
-	strcpy(cmd3, cmd);
 
-	redirection = redirectionCmd(cmd2);
-        if(redirection)
-                return 1;
 	piped = parsePipeCommand(cmd, cmdPiped);
 
 	if(piped)
@@ -178,19 +150,17 @@ int processCommand(char *cmd, char ** parsed, char **parsedPipe, int* argcnt)
 		*argcnt = parseCommand(cmd, parsed);
 	}
 
-	 if(piped)
-		return 2;
-	else 
-		return 0;
 
-//	return piped;
+	return piped;
 }
 
 int main()
 {
-	char cmd[1024], *parsedCmd[MAXARG], *parsedPipe[MAXARG];
-	int processFlag = 0, argcnt;
 	
+	streamFiles mystream;
+	strcpy(mystream.inputFile, "");
+	strcpy(mystream.outputFile, "");
+	strcpy(mystream.errorFile, "");
 	while(1)
 	{
 		processFlag = 0;
@@ -198,12 +168,12 @@ int main()
 
 		if(takeCommand(cmd) == 1) continue;
 
-	//	int sz = parseCommand(cmd, parsedCmd);
-	//	terminateCommand(sz, parsedCmd);
-
-		processFlag = processCommand(cmd, parsedCmd, parsedPipe,  &argcnt);
-		if(processFlag == 1)
-			runCommand(cmd);
+		redirectionFlag = redirectionCmd(cmd, cmd2, &mystream);
+		processFlag = processCommand(cmd2, parsedCmd, parsedPipe,  &argcnt);
+		if(redirectionFlag)
+		{
+			runCommand(parsedCmd, &mystream, redirectionFlag - 1);
+		}
 		else{
 			terminateCommand(argcnt, parsedCmd, parsedPipe, processFlag);
 		}
