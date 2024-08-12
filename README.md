@@ -1,11 +1,13 @@
 # MyShell
 
-**MyShell** is a custom Unix-like shell implemented in C that provides a set of built-in commands and supports the execution of external commands. It includes several built-in commands for common file operations and environment manipulations, as well as the ability to handle standard bash commands.
+**MyShell** is a custom Unix-like shell implemented in C that provides a set of built-in commands and supports the execution of external commands. It includes several built-in commands for common file operations and environment manipulations, as well as the ability to handle standard bash commands. The shell supports
 
 ## Features
 
-- **Built-in Commands**: Includes custom commands such as `mycp`, `mymv`, `mypwd`, `myecho`, `myhelp`, `myexit`, `mytype`, and `envir`.
+- **Built-in Commands**: Includes custom commands such as `mycp`, `mymv`, `mypwd`, `myecho`, `myhelp`, `myexit`, `mytype`, `envir`, `myfree`, `myuptime`.
 - **Support for External Commands**: Can execute standard bash commands and other external programs.
+- **Supports piping: allowing users to connect the output of one command directly to the input of another command.
+- **Supports redirection: enabling users to redirect the output and error of commands to files or other locations, and to use files as input for commands.
 - **Command-Line Interface**: Interactive shell environment where you can execute commands, view help messages, and manage files.
 
 ## Built-in Commands
@@ -38,10 +40,10 @@ To execute `MyShell` from any location, add its directory to your `PATH` environ
    
 ### Compiling MyShell
 
-To compile `MyShell` with its various source files, use the following `gcc` command:
+To compile `MyShell` with its various source files, use the following `gcc` command: 
 
   ```
-gcc -o my_shell program.c mycp.c mymv.c mypwd.c myecho.c myhelp.c mycd.c envir.c external.c mytype.c piping.c myfree.c myuptime.c redirection.c -lreadline -lhistory 
+gcc -o my_shell program.c mycp.c mymv.c mypwd.c myecho.c myhelp.c mycd.c envir.c external.c mytype.c piping.c myfree.c myuptime.c redirection.c terminate.c -lreadline -lhistory 
 ```
 ## Examples 
 
@@ -87,5 +89,8 @@ mytype mycp
 envir
 envir PATH
 ```
+### pipe and redirection 
+```
+ls | grep p > output.txt
 
 
