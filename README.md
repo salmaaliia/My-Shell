@@ -54,7 +54,7 @@ mycp file1.txt file2.txt
 
 ### Moving a File
 ```
-mymv file1.txt /new/location/file1.txt
+mymv file1.txt file2.txt
 ```
 
 ### Printing the Current Directory
