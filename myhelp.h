@@ -10,7 +10,9 @@ typedef enum {
     CMD_MYEXIT,
     CMD_MYTYPE,
     CMD_ENVI,
-    CMD_MYCD,    
+    CMD_MYCD, 
+    CMD_MYUPTIME,
+    CMD_MYFREE,
     CMD_UNKNOWN
 } CommandType;
 

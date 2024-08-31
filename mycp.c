@@ -24,7 +24,7 @@ void runMycp(int argcnt, char **args)
 		return;
 	}
 
-	int destFD = open(args[2], O_WRONLY | O_CREAT);
+	int destFD = open(args[2], O_WRONLY | O_CREAT, 0644);
         if(destFD == -1)
         {
                 perror("Error! cannot open destination file");

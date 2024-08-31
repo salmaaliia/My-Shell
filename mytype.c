@@ -6,7 +6,7 @@
 #include "mytype.h"
 
 const char myShellPath[] = "/home/salma/Desktop/myShell";
-const char *internalCMDs[] = {"mymv", "myecho", "myhelp", "myexit", "mytype", "envir", "mycp", "mycd", "mypwd", NULL};
+const char *internalCMDs[] = {"mymv", "myecho", "myhelp", "myexit", "mytype", "envir", "mycp", "mycd", "mypwd", "myuptime", "myfree", NULL};
 
 int internal(const char *cmd) {
     for (int i = 0; internalCMDs[i] != NULL; i++) {

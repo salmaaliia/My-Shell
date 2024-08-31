@@ -6,26 +6,36 @@
 #include <stdlib.h>
 #include "external.h"
 
-void renExternal(char **args)
+void runExternal(char **args)
 {
-	pid_t pid = fork(); 
-       
-	if (pid == -1)
-       	{
-	       	printf("\nFork Fail");
-		return;
-       	}
-       	else if (pid == 0)
-       	{
-		if (execvp(args[0], args) < 0)
-	       	{
-	     		printf("\nCommand cannot be excuted");
-	       	}
-		exit(0);
-       	}
-       	else {
-		int stat;
-	       	wait(&stat); 
-	      	return;
-       	}
+    pid_t pid = fork();
+
+    if (pid == -1) {
+	    perror("Fork failed");
+	    exit(EXIT_FAILURE);
+    } 
+    else if (pid == 0) {
+    	    if (execvp(args[0], args) == -1) {
+		    perror("Execution failed");
+		    exit(EXIT_FAILURE);
+	    }
+    } 
+    else {
+    	    int status;
+    	    if (waitpid(pid, &status, 0) == -1) {
+		    perror("Waitpid failed");
+    	    } 
+     	    else {
+		    if (WIFEXITED(status)) {
+	    		    int exitStatus = WEXITSTATUS(status);
+	    		    if (exitStatus != 0) {
+				    printf("Command exited with non-zero status: %d\n", exitStatus);
+			    }
+            } 
+            else if (WIFSIGNALED(status)) {
+    		    printf("Command terminated by signal: %d\n", WTERMSIG(status));
+            }
+        }
+    }
 }
+

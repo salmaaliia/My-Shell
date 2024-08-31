@@ -13,6 +13,8 @@ CommandType getCommandType(const char *cmd) {
     if (strcmp(cmd, "mytype") == 0) return CMD_MYTYPE;
     if (strcmp(cmd, "envir") == 0) return CMD_ENVI;
     if (strcmp(cmd, "mycd") == 0) return CMD_MYCD;
+    if (strcmp(cmd, "myuptime") == 0) return CMD_MYUPTIME;
+    if (strcmp(cmd, "myfree") == 0) return CMD_MYFREE;
     return CMD_UNKNOWN;
 }
 
@@ -54,8 +56,16 @@ void printHelp(CommandType cmdType){
             printf("mycd <directory>\n");
             printf("  Changes the current directory to <directory>.\n");
             break;
-        case CMD_UNKNOWN:
-        default:
+	case CMD_MYUPTIME:
+            printf("myuptime\n");
+            printf("  Displays the system uptime.\n");
+            break;
+        case CMD_MYFREE:
+            printf("myfree\n");
+            printf("  Displays the system memory usage.\n");
+            break;
+	case CMD_UNKNOWN:
+	default:
             printf("Unknown command.\n");
             break;
     }
@@ -92,7 +102,13 @@ void runMyhelp(int argcnt, char **args)
 		printf("\n");
 		printf("mycd <directory>\n");
 		printf("  Changes the current directory to <directory>.\n");
-    	//	printf("\n");
+    	        printf("\n");
+		printf("myuptime\n");
+		printf("  Displays the system uptime.\n");
+		printf("\n");
+		printf("myfree\n");
+		printf("  Displays the system memory usage.\n");
+		//	printf("\n");
 	}
 	else
 	{
