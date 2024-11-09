@@ -1,6 +1,6 @@
 # MyShell
 
-**MyShell** is a custom Unix-like shell implemented in C that provides a set of built-in commands and supports the execution of external commands. It includes several built-in commands for common file operations and environment manipulations, as well as the ability to handle standard bash commands. The shell supports
+**MyShell** is a custom Unix-like shell implemented in C that provides a set of built-in commands and supports the execution of external commands. It includes several built-in commands for common file operations and environment manipulations, as well as the ability to handle standard bash commands. The shell supports IO redirection and Piping.
 
 ## Features
 
